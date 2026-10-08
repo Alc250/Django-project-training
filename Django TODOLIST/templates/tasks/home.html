@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My To-Do List</title>
+
+    {% load static %}
+
+    <link rel="stylesheet" href="{% static 'tasks/style.css' %}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>My To-Do List</h1>
+
+        <p class="subtitle">
+            Keep track of your daily tasks
+        </p>
+
+        <form method="POST" class="task-form">
+
+            {% csrf_token %}
+
+            <input
+                type="text"
+                name="title"
+                placeholder="Enter a new task..."
+                required
+            >
+
+            <button type="submit">
+                Add Task
+            </button>
+
+        </form>
+
+
+        <div class="task-list">
+
+            {% if tasks %}
+
+                {% for task in tasks %}
+
+                    <div class="task {% if task.completed %}completed{% endif %}">
+
+                        <div class="task-info">
+
+                            <h3>
+                                {{ task.title }}
+                            </h3>
+
+                            <small>
+                                Created: {{ task.created_at|date:"M d, Y H:i" }}
+                            </small>
+
+                        </div>
+
+                        <div class="buttons">
+
+                            <a
+                                href="{% url 'complete_task' task.id %}"
+                                class="complete-btn"
+                            >
+                                {% if task.completed %}
+                                    Undo
+                                {% else %}
+                                    Complete
+                                {% endif %}
+                            </a>
+
+                            <a
+                                href="{% url 'delete_task' task.id %}"
+                                class="delete-btn"
+                            >
+                                Delete
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="empty">
+                    <p>No tasks yet.</p>
+                    <p>Add your first task above!</p>
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</body>
+</html>
